@@ -86,7 +86,7 @@ app.get("/:query", async (req, res) => {
         return {
           title: r.title,
           description: r.description
-            ? shorten(r.description.split("\n").join(""), 100)
+            ? shorten(r.description.split("\n").join(""), 150)
             : null,
           url: r.url,
           domain,
@@ -116,7 +116,7 @@ app.get("/:query", async (req, res) => {
               html.result[4] +
               (r.description
                 ? '<p class="description">' +
-                  escapeHTML(shorten(r.description.split("\n").join(""), 100)) +
+                  escapeHTML(shorten(r.description.split("\n").join(""), 150)) +
                   "</p>"
                 : "") +
               html.result[5]
@@ -134,7 +134,8 @@ app.use("/_/static", express.static(`${__dirname}/static`));
 app.use((_req, res) => res.status(404).send("Not Found"));
 
 // Shorten
-const shorten = (s, l) => (s.length > l ? s.substr(l - 3) + "..." : s);
+const shorten = (s, l) =>
+  s.length > l ? s.substr(0, l - 3).trimEnd() + "..." : s;
 
 // Format URL
 const formatUrl = (s) => {
