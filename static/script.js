@@ -53,12 +53,12 @@ const search = (q) => {
             path.innerText = r.path;
             url.appendChild(path);
 
-            const description = document.createElement("p");
-            description.className = "description";
-            description.innerText =
-              r.description ||
-              "Alles doesn't have a description for this page.";
-            box.appendChild(description);
+            if (r.description) {
+              const description = document.createElement("p");
+              description.className = "description";
+              description.innerText = r.description;
+              box.appendChild(description);
+            }
           }, i * 100)
         );
       } else bottom.innerText = "Sorry, no results were found.";

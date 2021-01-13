@@ -114,11 +114,11 @@ app.get("/:query", async (req, res) => {
               html.result[3] +
               escapeHTML(path) +
               html.result[4] +
-              escapeHTML(
-                r.description
-                  ? shorten(r.description.split("\n").join(""), 100)
-                  : "Alles doesn't have a description for this page."
-              ) +
+              (r.description
+                ? '<p class="description">' +
+                  escapeHTML(shorten(r.description.split("\n").join(""), 100)) +
+                  "</p>"
+                : "") +
               html.result[5]
             );
           })
