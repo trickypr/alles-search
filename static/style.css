@@ -95,6 +95,7 @@ h1 {
   display: block;
   text-decoration: none;
   color: inherit;
+  overflow: hidden;
 }
 
 .result.animate {
@@ -110,6 +111,7 @@ h1 {
 .result .url {
   color: #006621;
   font-size: 10px;
+  white-space: nowrap;
 }
 
 .result .domain {
