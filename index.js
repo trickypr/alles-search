@@ -1,6 +1,8 @@
 require("dotenv").config();
 const { SESSION_API, SEARCH_API, SEACH_SECRET } = process.env;
+
 const axios = require("axios");
+const escapeHTML = require("escape-html");
 
 // Express
 const express = require("express");
@@ -48,13 +50,27 @@ app.get("/", (req, res) => {
     html.base[0] +
       "Search with Alles" +
       html.base[1] +
+      html.base[2] +
       html.home[0] +
-      html.base[2]
+      html.base[3]
   );
 });
 
 // Search
-app.get("/:query", (req, res) => res.send(req.params.query));
+app.get("/:query", (req, res) => {
+  const query = req.params.query.trim();
+
+  // Response
+  res.send(
+    html.base[0] +
+      `Search - ${escapeHTML(query)}` +
+      html.base[1] +
+      escapeHTML(query) +
+      html.base[2] +
+      `Results for "${escapeHTML(query)}"` +
+      html.base[3]
+  );
+});
 
 // Static
 app.use("/_/static", express.static(`${__dirname}/static`));
