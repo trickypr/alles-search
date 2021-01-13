@@ -1,5 +1,5 @@
 require("dotenv").config();
-const { SESSION_API, SEARCH_API, SEARCH_SECRET } = process.env;
+const { SESSION_API, SEARCH_API, SEARCH_SECRET, PORT } = process.env;
 
 const axios = require("axios");
 const escapeHTML = require("escape-html");
@@ -11,7 +11,7 @@ const app = express();
 app.use(require("cookie-parser")());
 app.use(require("body-parser").json());
 app.use((_err, _req, res, _next) => res.status(500).send("Internal Error"));
-app.listen(8080, () => console.log("Server is listening..."));
+app.listen(PORT || 8080, () => console.log("Server is listening..."));
 
 // HTML
 const fs = require("fs");
