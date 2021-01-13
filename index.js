@@ -1,5 +1,13 @@
 require("dotenv").config();
-const { SESSION_API, SEARCH_API, SEARCH_SECRET, PORT } = process.env;
+const {
+  HORIZON_API,
+  SESSION_API,
+  SEARCH_API,
+  SEARCH_SECRET,
+  LOGIN_URL,
+  PORT,
+} = process.env;
+const TOKEN_COOKIE = "search-token";
 
 const axios = require("axios");
 const escapeHTML = require("escape-html");
@@ -23,9 +31,13 @@ const html = {
 };
 
 // Auth
-const auth = async (req, res, next) => {
-  const { token } = req.cookies;
-  if (!token) return next();
+const auth = async (req, _res, next) => {
+  const token = req.cookies[TOKEN_COOKIE];
+  if (typeof token !== "string") return next();
+  if (!token) {
+    req.user = null;
+    return next();
+  }
 
   try {
     const t = (
@@ -34,17 +46,22 @@ const auth = async (req, res, next) => {
       )
     ).data;
     if (t.scope !== "search") return next();
-    req.user = t.user;
+    req.user = (await axios.get(`${HORIZON_API}/users/${t.user}`)).data;
   } catch (err) {}
   next();
 };
 
 // Homepage
-app.get("/", (req, res) => {
+app.get("/", auth, (req, res) => {
+  const { q, auth } = req.query;
+
   // Redirect /?q=example to /example
-  const { q } = req.query;
   if (typeof q === "string")
     return res.redirect(q.trim() ? `/${encodeURIComponent(q.trim())}` : `/`);
+
+  // Automatic Sign in
+  if (typeof auth !== "string" && !req.user && req.user !== null)
+    return res.redirect(`${LOGIN_URL}?silent`);
 
   // Response
   res.send(
@@ -57,7 +74,7 @@ app.get("/", (req, res) => {
 });
 
 // Search
-app.get("/:query", async (req, res) => {
+app.get("/:query", auth, async (req, res) => {
   const query = req.params.query.trim();
   const json = req.query.format === "json";
 
@@ -129,6 +146,22 @@ app.get("/:query", async (req, res) => {
 
 // Static
 app.use("/_/static", express.static(`${__dirname}/static`));
+
+// Auth
+app.get("/_/auth", async (req, res) => {
+  const { token } = req.query;
+
+  if (typeof token === "string") {
+    try {
+      res.cookie(
+        TOKEN_COOKIE,
+        (await axios.patch(`${SESSION_API}/tokens`, { token })).data.token
+      );
+    } catch (err) {}
+  } else res.cookie(TOKEN_COOKIE, "");
+
+  res.redirect("/?auth");
+});
 
 // 404
 app.use((_req, res) => res.status(404).send("Not Found"));
