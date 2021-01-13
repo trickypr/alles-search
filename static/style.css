@@ -1,0 +1,59 @@
+@import url("https://assets.alles.cx/fonts/inter/inter.css");
+@import url("https://assets.alles.cx/styles/reset.css");
+
+* {
+  font-family: Inter;
+}
+
+:root {
+  --primary: #23539b;
+}
+
+body {
+  margin: 0;
+  background: #f0f0f0;
+  height: 100%;
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+}
+
+main {
+  margin: 0 auto;
+}
+
+h1 {
+  text-align: center;
+  font-size: 100px;
+}
+
+.searchForm {
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  background: #ffffff;
+  display: flex;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.searchForm input,
+.searchForm button {
+  border: none;
+  background: none;
+  padding: 10px;
+}
+
+.searchForm input {
+  width: 400px;
+  padding: 10px 20px;
+}
+
+.searchForm button {
+  cursor: pointer;
+  color: #444444;
+}
+
+.searchForm button:hover,
+.searchForm button:focus {
+  background: var(--primary);
+  color: #ffffff;
+}

@@ -14,7 +14,10 @@ app.listen(8080, () => console.log("Server is listening..."));
 const fs = require("fs");
 const getHTML = (name) =>
   fs.readFileSync(`${__dirname}/html/${name}.html`).toString().split("[x]");
-const html = {};
+const html = {
+  base: getHTML("base"),
+  home: getHTML("home"),
+};
 
 // Auth
 const auth = async (req, res, next) => {
@@ -36,18 +39,25 @@ const auth = async (req, res, next) => {
 // Homepage
 app.get("/", (req, res) => {
   // Redirect /?q=example to /example
-  if (typeof req.query.q === "string")
-    return res.redirect(`/${encodeURIComponent(req.query.q)}`);
+  const { q } = req.query;
+  if (typeof q === "string")
+    return res.redirect(q.trim() ? `/${encodeURIComponent(q.trim())}` : `/`);
 
   // Response
-  res.send("Alles Search!");
+  res.send(
+    html.base[0] +
+      "Search with Alles" +
+      html.base[1] +
+      html.home[0] +
+      html.base[2]
+  );
 });
 
 // Search
 app.get("/:query", (req, res) => res.send(req.params.query));
 
 // Static
-app.use("/_/static", express.static(`${__dirname}/web`));
+app.use("/_/static", express.static(`${__dirname}/static`));
 
 // 404
 app.use((_req, res) => res.status(404).send("Not Found"));
