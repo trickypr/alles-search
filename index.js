@@ -33,6 +33,19 @@ const auth = async (req, res, next) => {
   next();
 };
 
+// Homepage
+app.get("/", (req, res) => {
+  // Redirect /?q=example to /example
+  if (typeof req.query.q === "string")
+    return res.redirect(`/${encodeURIComponent(req.query.q)}`);
+
+  // Response
+  res.send("Alles Search!");
+});
+
+// Search
+app.get("/:query", (req, res) => res.send(req.params.query));
+
 // Static
 app.use("/_/static", express.static(`${__dirname}/web`));
 
