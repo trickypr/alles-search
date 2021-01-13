@@ -72,12 +72,12 @@ h1 {
 }
 
 @keyframes loading {
-  0% {
+  from {
     transform: rotate(0deg);
     border-radius: 0;
   }
 
-  100% {
+  to {
     transform: rotate(3600deg);
     border-radius: 50%;
   }
@@ -92,6 +92,10 @@ h1 {
   display: block;
   text-decoration: none;
   color: inherit;
+}
+
+.result.animate {
+  animation: resultAppear 0.2s forwards ease-out;
 }
 
 .result .title {
@@ -113,4 +117,16 @@ h1 {
   color: #444444;
   margin-top: 5px;
   font-size: 15px;
+}
+
+@keyframes resultAppear {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
