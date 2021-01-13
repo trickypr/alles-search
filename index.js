@@ -63,7 +63,7 @@ app.get("/:query", (req, res) => {
   // Response
   res.send(
     html.base[0] +
-      `Search - ${escapeHTML(query)}` +
+      escapeHTML(query) +
       html.base[1] +
       escapeHTML(query) +
       html.base[2] +
