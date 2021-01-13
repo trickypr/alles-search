@@ -19,7 +19,7 @@ const getHTML = (name) =>
   fs.readFileSync(`${__dirname}/html/${name}.html`).toString().split("[x]");
 const html = {
   base: getHTML("base"),
-  home: getHTML("home"),
+  result: getHTML("result"),
 };
 
 // Auth
@@ -52,7 +52,6 @@ app.get("/", (req, res) => {
       "Search with Alles" +
       html.base[1] +
       html.base[2] +
-      html.home[0] +
       html.base[3]
   );
 });
@@ -83,12 +82,7 @@ app.get("/:query", async (req, res) => {
   if (json)
     res.json({
       results: data.results.map((r) => {
-        const parsedUrl = url.parse(r.url);
-        let domain = parsedUrl.hostname;
-        if (domain.startsWith("www.")) domain = domain.substr(4);
-        let path = parsedUrl.path;
-        if (path.endsWith("/")) path = path.substr(0, path.length - 1);
-
+        const { domain, path } = formatUrl(r.url);
         return {
           title: r.title,
           description: r.description
@@ -107,7 +101,28 @@ app.get("/:query", async (req, res) => {
         html.base[1] +
         escapeHTML(query) +
         html.base[2] +
-        `Results for "${escapeHTML(query)}"` +
+        data.results
+          .map((r) => {
+            const { domain, path } = formatUrl(r.url);
+            return (
+              html.result[0] +
+              escapeHTML(r.url) +
+              html.result[1] +
+              escapeHTML(r.title) +
+              html.result[2] +
+              escapeHTML(domain) +
+              html.result[3] +
+              escapeHTML(path) +
+              html.result[4] +
+              escapeHTML(
+                r.description
+                  ? shorten(r.description.split("\n").join(""), 100)
+                  : "Alles doesn't have a description for this page."
+              ) +
+              html.result[5]
+            );
+          })
+          .join("\n") +
         html.base[3]
     );
 });
@@ -120,3 +135,13 @@ app.use((_req, res) => res.status(404).send("Not Found"));
 
 // Shorten
 const shorten = (s, l) => (s.length > l ? s.substr(l - 3) + "..." : s);
+
+// Format URL
+const formatUrl = (s) => {
+  const parsedUrl = url.parse(s);
+  let domain = parsedUrl.hostname;
+  if (domain.startsWith("www.")) domain = domain.substr(4);
+  let path = parsedUrl.path;
+  if (path.endsWith("/")) path = path.substr(0, path.length - 1);
+  return { domain, path };
+};
