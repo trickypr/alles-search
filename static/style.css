@@ -47,6 +47,7 @@ h1 {
 .searchForm input {
   flex-grow: 1;
   padding: 10px 20px;
+  min-width: 0;
 }
 
 .searchForm button {
