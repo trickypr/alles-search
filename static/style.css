@@ -13,13 +13,12 @@ body {
   margin: 0;
   background: #f0f0f0;
   height: 100%;
-  display: flex;
-  flex-flow: column;
-  justify-content: center;
+  padding: 100px 20px 0;
 }
 
 main {
   margin: 0 auto;
+  max-width: 450px;
 }
 
 h1 {
@@ -43,11 +42,12 @@ h1 {
 }
 
 .searchForm input {
-  width: 400px;
+  flex-grow: 1;
   padding: 10px 20px;
 }
 
 .searchForm button {
+  flex-shrink: 0;
   cursor: pointer;
   color: #444444;
 }
