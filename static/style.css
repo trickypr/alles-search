@@ -32,6 +32,7 @@ h1 {
   display: flex;
   border-radius: 5px;
   overflow: hidden;
+  margin: 0;
 }
 
 .searchForm input,
@@ -56,4 +57,60 @@ h1 {
 .searchForm button:focus {
   background: var(--primary);
   color: #ffffff;
+}
+
+.bottom {
+  margin-top: 20px;
+}
+
+.loading {
+  width: 30px;
+  height: 30px;
+  background: var(--primary);
+  margin: 30px auto;
+  animation: loading 10s infinite;
+}
+
+@keyframes loading {
+  0% {
+    transform: rotate(0deg);
+    border-radius: 0;
+  }
+
+  100% {
+    transform: rotate(3600deg);
+    border-radius: 50%;
+  }
+}
+
+.result {
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  background: #ffffff;
+  border-radius: 5px;
+  margin-top: 20px;
+  padding: 10px;
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+
+.result .title {
+  color: var(--primary);
+  font-weight: 600;
+  font-size: 18px;
+}
+
+.result .url {
+  color: #006621;
+  font-size: 10px;
+}
+
+.result .domain {
+  font-weight: 600;
+}
+
+.result .description {
+  color: #444444;
+  margin-top: 5px;
+  font-size: 15px;
 }

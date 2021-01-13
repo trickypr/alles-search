@@ -1,8 +1,9 @@
 require("dotenv").config();
-const { SESSION_API, SEARCH_API, SEACH_SECRET } = process.env;
+const { SESSION_API, SEARCH_API, SEARCH_SECRET } = process.env;
 
 const axios = require("axios");
 const escapeHTML = require("escape-html");
+const url = require("url");
 
 // Express
 const express = require("express");
@@ -57,19 +58,58 @@ app.get("/", (req, res) => {
 });
 
 // Search
-app.get("/:query", (req, res) => {
+app.get("/:query", async (req, res) => {
   const query = req.params.query.trim();
+  const json = req.query.format === "json";
+
+  // Request Search API
+  let data;
+  try {
+    data = (
+      await axios.get(
+        `${SEARCH_API}/search?query=${encodeURIComponent(query)}`,
+        {
+          headers: {
+            authorization: SEARCH_SECRET,
+          },
+        }
+      )
+    ).data;
+  } catch (err) {
+    return res.status(500).send("Internal Error");
+  }
 
   // Response
-  res.send(
-    html.base[0] +
-      escapeHTML(query) +
-      html.base[1] +
-      escapeHTML(query) +
-      html.base[2] +
-      `Results for "${escapeHTML(query)}"` +
-      html.base[3]
-  );
+  if (json)
+    res.json({
+      results: data.results.map((r) => {
+        const parsedUrl = url.parse(r.url);
+        let domain = parsedUrl.hostname;
+        if (domain.startsWith("www.")) domain = domain.substr(4);
+        let path = parsedUrl.path;
+        if (path.endsWith("/")) path = path.substr(0, path.length - 1);
+
+        return {
+          title: r.title,
+          description: r.description
+            ? shorten(r.description.split("\n").join(""), 100)
+            : null,
+          url: r.url,
+          domain,
+          path,
+        };
+      }),
+    });
+  else
+    res.send(
+      html.base[0] +
+        escapeHTML(query) +
+        html.base[1] +
+        escapeHTML(query) +
+        html.base[2] +
+        `Results for "${escapeHTML(query)}"` +
+        html.base[3]
+    );
 });
 
 // Static
@@ -77,3 +117,6 @@ app.use("/_/static", express.static(`${__dirname}/static`));
 
 // 404
 app.use((_req, res) => res.status(404).send("Not Found"));
+
+// Shorten
+const shorten = (s, l) => (s.length > l ? s.substr(l - 3) + "..." : s);
