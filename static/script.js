@@ -67,7 +67,8 @@ const search = (q) => {
   });
 };
 
-if (avatar) avatar.onload = () => {
-  avatar.style.display = "block";
-  setTimeout(() => (avatar.style.opacity = 1), 100);
-};
+if (avatar)
+  avatar.onload = () => {
+    avatar.style.display = "block";
+    setTimeout(() => (avatar.style.opacity = 1), 100);
+  };
