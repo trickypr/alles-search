@@ -63,6 +63,26 @@ h1 {
   color: #ffffff;
 }
 
+.avatar {
+  top: 0px;
+  right: -70px;
+  position: absolute;
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  margin: auto 10px auto;
+  box-shadow: var(--shadow);
+  display: none;
+  opacity: 0;
+  transition-duration: 0.2s;
+}
+
+@media screen and (max-width: 650px) {
+  .avatar {
+    display: none !important;
+  }
+}
+
 .bottom {
   margin-top: 20px;
 }
@@ -133,14 +153,4 @@ h1 {
     transform: scale(1);
     opacity: 1;
   }
-}
-
-.avatar {
-  position: fixed;
-  top: 25px;
-  right: 25px;
-  border-radius: 50%;
-  width: 60px;
-  height: 60px;
-  box-shadow: var(--shadow);
 }

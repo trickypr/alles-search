@@ -31,12 +31,15 @@ const html = {
 };
 
 // Generate Page
-const generatePage = ({ title, query, content }) =>
+const generatePage = ({ title, user, query, content }) =>
   html.base[0] +
   escapeHTML(title || "Search with Alles") +
   html.base[1] +
-  html.base[2] +
   escapeHTML(query || "") +
+  html.base[2] +
+  (user
+    ? `<img class="avatar" src="https://thispersondoesnotexist.com/image" />`
+    : "") +
   html.base[3] +
   (content || "") +
   html.base[4];
@@ -75,7 +78,7 @@ app.get("/", auth, (req, res) => {
     return res.redirect(`${LOGIN_URL}?silent`);
 
   // Response
-  res.send(generatePage({}));
+  res.send(generatePage({ user: req.user }));
 });
 
 // Search
@@ -120,6 +123,7 @@ app.get("/:query", auth, async (req, res) => {
     res.send(
       generatePage({
         title: query,
+        user: req.user,
         query,
         content: data.results
           .map((r) => {

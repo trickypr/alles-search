@@ -1,5 +1,6 @@
 const form = document.querySelector("form");
 const input = document.querySelector("input");
+const avatar = document.querySelector(".avatar");
 const bottom = document.querySelector(".bottom");
 
 let timeouts = [];
@@ -64,4 +65,9 @@ const search = (q) => {
       } else bottom.innerText = "Sorry, no results were found.";
     } else bottom.innerText = `Error: ${await res.text()}`;
   });
+};
+
+avatar.onload = () => {
+  avatar.style.display = "block";
+  setTimeout(() => (avatar.style.opacity = 1), 100);
 };
