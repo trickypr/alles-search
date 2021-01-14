@@ -38,7 +38,7 @@ const generatePage = ({ title, user, query, content }) =>
   escapeHTML(query || "") +
   html.base[2] +
   (user
-    ? `<img class="avatar" src="https://thispersondoesnotexist.com/image" />`
+    ? `<img class="avatar" src="https://avatar.alles.cx/${user.id}" />`
     : "") +
   html.base[3] +
   (content || "") +
