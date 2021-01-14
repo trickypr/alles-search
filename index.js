@@ -30,6 +30,17 @@ const html = {
   result: getHTML("result"),
 };
 
+// Generate Page
+const generatePage = ({ title, query, content }) =>
+  html.base[0] +
+  escapeHTML(title || "Search with Alles") +
+  html.base[1] +
+  html.base[2] +
+  escapeHTML(query || "") +
+  html.base[3] +
+  (content || "") +
+  html.base[4];
+
 // Auth
 const auth = async (req, _res, next) => {
   const token = req.cookies[TOKEN_COOKIE];
@@ -64,13 +75,7 @@ app.get("/", auth, (req, res) => {
     return res.redirect(`${LOGIN_URL}?silent`);
 
   // Response
-  res.send(
-    html.base[0] +
-      "Search with Alles" +
-      html.base[1] +
-      html.base[2] +
-      html.base[3]
-  );
+  res.send(generatePage({}));
 });
 
 // Search
@@ -113,12 +118,10 @@ app.get("/:query", auth, async (req, res) => {
     });
   else
     res.send(
-      html.base[0] +
-        escapeHTML(query) +
-        html.base[1] +
-        escapeHTML(query) +
-        html.base[2] +
-        data.results
+      generatePage({
+        title: query,
+        query,
+        content: data.results
           .map((r) => {
             const { domain, path } = formatUrl(r.url);
             return (
@@ -139,8 +142,8 @@ app.get("/:query", auth, async (req, res) => {
               html.result[5]
             );
           })
-          .join("\n") +
-        html.base[3]
+          .join("\n"),
+      })
     );
 });
 
