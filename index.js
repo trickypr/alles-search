@@ -78,7 +78,14 @@ app.get("/", auth, (req, res) => {
     return res.redirect(`${LOGIN_URL}?silent`);
 
   // Response
-  res.send(generatePage({ user: req.user }));
+  res.send(
+    generatePage({
+      user: req.user,
+      content: !req.user
+        ? `<p style="text-align: center;"><a href="${LOGIN_URL}">Sign in</a> to get the most out of Alles!</p>`
+        : ``,
+    })
+  );
 });
 
 // Search
