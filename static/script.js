@@ -14,7 +14,7 @@ form.onsubmit = (e) => {
 
 const search = (q) => {
   timeouts.forEach((t) => clearTimeout(t));
-  document.title = q || "Search with Alles";
+  document.title = q ? `${q} - Alles Search` : `Search with Alles`;
   history.pushState(q, q, `/${encodeURIComponent(q)}`);
   input.value = q;
 

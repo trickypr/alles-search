@@ -122,7 +122,7 @@ app.get("/:query", auth, async (req, res) => {
   else
     res.send(
       generatePage({
-        title: query,
+        title: `${query} - Alles Search`,
         user: req.user,
         query,
         content: data.results
