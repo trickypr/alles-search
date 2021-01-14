@@ -1,0 +1,16 @@
+<OpenSearchDescription
+  xmlns="http://a9.com/-/spec/opensearch/1.1/"
+  xmlns:moz="http://www.mozilla.org/2006/browser/search/"
+>
+  <ShortName>Alles Search</ShortName>
+  <Description>The search engine built for you, by Alles</Description>
+  <InputEncoding>utf-8</InputEncoding>
+  <image width="16" height="16" type="image/x-icon"
+    >https://search.alles.cx/_/static/logo-16.png</image
+  >
+  <image width="64" height="64" type="image/png"
+    >https://search.alles.cx/_/static/logo-64.png</image
+  >
+  <Url type="text/html" template="https://search.alles.cx/{searchTerms}" />
+  <moz:SearchForm>https://search.alles.cx</moz:SearchForm>
+</OpenSearchDescription>
