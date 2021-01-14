@@ -11,6 +11,6 @@
   <image width="64" height="64" type="image/png"
     >https://search.alles.cx/_/static/logo-64.png</image
   >
-  <Url type="text/html" template="https://search.alles.cx/{searchTerms}" />
+  <Url type="text/html" template="https://search.alles.cx/?q={searchTerms}" />
   <moz:SearchForm>https://search.alles.cx</moz:SearchForm>
 </OpenSearchDescription>
