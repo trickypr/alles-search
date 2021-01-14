@@ -2,7 +2,7 @@
   xmlns="http://a9.com/-/spec/opensearch/1.1/"
   xmlns:moz="http://www.mozilla.org/2006/browser/search/"
 >
-  <ShortName>Alles Search</ShortName>
+  <ShortName>Alles</ShortName>
   <Description>The search engine built for you, by Alles</Description>
   <InputEncoding>utf-8</InputEncoding>
   <image width="16" height="16" type="image/x-icon"
