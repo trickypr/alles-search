@@ -98,7 +98,9 @@ app.get("/:query", auth, async (req, res) => {
   try {
     data = (
       await axios.get(
-        `${SEARCH_API}/search?query=${encodeURIComponent(query)}`,
+        `${SEARCH_API}/search?query=${encodeURIComponent(query)}${
+          req.user ? `&user=${req.user.id}` : ``
+        }`,
         {
           headers: {
             authorization: SEARCH_SECRET,
