@@ -9,13 +9,6 @@ const {
 } = process.env;
 const TOKEN_COOKIE = "search-token";
 
-const texts = [
-  `Show us some love, <a href="/_/tweet" target="_blank">tweet about us</a>!`,
-  `Find out how to <a href="https://twitter.com/AllesHQ/status/1349807735597125632" target="_blank">make it your default</a>`,
-  `Got feedback? <a href="https://twitter.com/AllesHQ">Tweet it at us</a>!`,
-  `Join our <a href="https://discord.gg/x5jMXZsffG">Discord server</a>`,
-];
-
 const axios = require("axios");
 const escapeHTML = require("escape-html");
 
@@ -33,6 +26,7 @@ const getHTML = (name) =>
   fs.readFileSync(`${__dirname}/html/${name}.html`).toString().split("[x]");
 const html = {
   base: getHTML("base"),
+  home: getHTML("home"),
   result: getHTML("result"),
 };
 
@@ -87,11 +81,10 @@ app.get("/", auth, (req, res) => {
   res.send(
     generatePage({
       user: req.user,
-      content: `<p style="text-align: center;">${
-        Math.floor(Math.random() * 3) && !req.user
-          ? `<a href="/_/login">Sign in</a> to get the most out of Alles.`
-          : texts[Math.floor(Math.random() * texts.length)]
-      }</p>`,
+      content:
+        html.home[0] +
+        (req.user ? "" : '<a href="/_/login">Sign In</a>') +
+        html.home[1],
     })
   );
 });
