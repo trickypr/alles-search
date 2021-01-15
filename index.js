@@ -125,7 +125,7 @@ app.get("/:query", auth, async (req, res) => {
           description: r.description
             ? shorten(r.description.split("\n").join(""), 150)
             : null,
-          url: r.searchUrl,
+          url: r.resultUrl,
           domain,
           path,
         };
@@ -142,7 +142,7 @@ app.get("/:query", auth, async (req, res) => {
             const { domain, path } = formatUrl(r.url);
             return (
               html.result[0] +
-              escapeHTML(r.searchUrl) +
+              escapeHTML(r.resultUrl) +
               html.result[1] +
               escapeHTML(r.title) +
               html.result[2] +
@@ -192,6 +192,24 @@ app.get("/_/auth", async (req, res) => {
   } else res.cookie(TOKEN_COOKIE, "");
 
   res.redirect("/?auth");
+});
+
+// Redirect to result
+app.get("/to/:token", async (req, res) => {
+  const { token } = req.params;
+  try {
+    res.redirect(
+      (
+        await axios.post(
+          `${SEARCH_API}/result`,
+          { token },
+          { headers: { authorization: SEARCH_SECRET } }
+        )
+      ).data
+    );
+  } catch (err) {
+    res.redirect("/");
+  }
 });
 
 // 404
