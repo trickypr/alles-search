@@ -31,7 +31,7 @@ const search = (q) => {
         timeouts = results.map((r, i) =>
           setTimeout(() => {
             const box = document.createElement("a");
-            box.className = "result animate";
+            box.className = "result appear";
             box.href = r.url;
             bottom.appendChild(box);
 

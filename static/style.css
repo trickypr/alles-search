@@ -121,8 +121,20 @@ h1 {
   overflow: hidden;
 }
 
-.result.animate {
-  animation: resultAppear 0.2s forwards ease-out;
+.appear {
+  animation: appear 0.2s forwards ease-out;
+}
+
+@keyframes appear {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 .result .title {
@@ -145,18 +157,6 @@ h1 {
   color: #444444;
   margin-top: 5px;
   font-size: 15px;
-}
-
-@keyframes resultAppear {
-  from {
-    transform: scale(0.95);
-    opacity: 0;
-  }
-
-  to {
-    transform: scale(1);
-    opacity: 1;
-  }
 }
 
 .homepageLinks {
