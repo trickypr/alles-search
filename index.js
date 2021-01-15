@@ -9,6 +9,13 @@ const {
 } = process.env;
 const TOKEN_COOKIE = "search-token";
 
+const texts = [
+  `Show us some love, <a href="/_/tweet" target="_blank">tweet about us</a>!`,
+  `Find out how to <a href="https://twitter.com/AllesHQ/status/1349807735597125632" target="_blank">make it your default</a>`,
+  `Got feedback? <a href="https://twitter.com/AllesHQ">Tweet it at us</a>!`,
+  `Join our <a href="https://discord.gg/x5jMXZsffG">Discord server</a>`,
+];
+
 const axios = require("axios");
 const escapeHTML = require("escape-html");
 
@@ -80,7 +87,11 @@ app.get("/", auth, (req, res) => {
   res.send(
     generatePage({
       user: req.user,
-      content: `<p style="text-align: center;">${getText(req.user)}</p>`,
+      content: `<p style="text-align: center;">${
+        Math.floor(Math.random() * 3) && !req.user
+          ? `<a href="/_/login">Sign in</a> to get the most out of Alles.`
+          : texts[Math.floor(Math.random() * texts.length)]
+      }</p>`,
     })
   );
 });
@@ -204,19 +215,4 @@ const formatUrl = (s) => {
   let path = parsedUrl.path;
   if (path.endsWith("/")) path = path.substr(0, path.length - 1);
   return { domain, path };
-};
-
-// Get Homepage Text
-const texts = require("./texts.json");
-const getText = (u) => {
-  const t1 = texts.filter((t) => t.auth === !!u || typeof t.auth !== "boolean");
-
-  const t2 = [];
-  for (let i1 in t1) {
-    for (let i2 = 0; i2 < (t1[i1].weight || 1); i2++) t2.push(t1[i1]);
-  }
-
-  const t3 = t2.map((t) => t.content);
-  const t = t3[Math.floor(Math.random() * t3.length)];
-  return t.split("[nickname]").join(escapeHTML(u ? u.nickname : ""));
 };
