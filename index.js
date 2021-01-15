@@ -93,6 +93,8 @@ app.get("/", auth, (req, res) => {
 app.get("/:query", auth, async (req, res) => {
   const query = req.params.query.trim();
   const json = req.query.format === "json";
+  const address =
+    req.headers["x-forwarded-for"] || req.connection.remoteAddress;
 
   // Request Search API
   let data;
@@ -101,7 +103,7 @@ app.get("/:query", auth, async (req, res) => {
       await axios.get(
         `${SEARCH_API}/search?query=${encodeURIComponent(query)}${
           req.user ? `&user=${req.user.id}` : ``
-        }`,
+        }&address=${encodeURIComponent(address)}`,
         {
           headers: {
             authorization: SEARCH_SECRET,
