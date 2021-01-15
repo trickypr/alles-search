@@ -110,17 +110,6 @@ h1 {
   }
 }
 
-.result {
-  box-shadow: var(--shadow);
-  background: #ffffff;
-  border-radius: 5px;
-  margin-top: 20px;
-  padding: 10px;
-  display: block;
-  color: inherit;
-  overflow: hidden;
-}
-
 .appear {
   animation: appear 0.2s forwards ease-out;
 }
@@ -135,6 +124,23 @@ h1 {
     transform: scale(1);
     opacity: 1;
   }
+}
+
+.answer,
+.result {
+  box-shadow: var(--shadow);
+  background: #ffffff;
+  border-radius: 5px;
+  margin-top: 20px;
+  padding: 10px 20px;
+  display: block;
+  color: inherit;
+  overflow: hidden;
+}
+
+.answer p {
+  font-weight: 500;
+  font-size: 18px;
 }
 
 .result .title {

@@ -118,6 +118,7 @@ app.get("/:query", auth, async (req, res) => {
   // Response
   if (json)
     res.json({
+      answer: data.answer,
       results: data.results.map((r) => {
         const { domain, path } = formatUrl(r.url);
         return {
@@ -137,28 +138,34 @@ app.get("/:query", auth, async (req, res) => {
         title: `${query} - Alles Search`,
         user: req.user,
         query,
-        content: data.results
-          .map((r) => {
-            const { domain, path } = formatUrl(r.url);
-            return (
-              html.result[0] +
-              escapeHTML(r.resultUrl) +
-              html.result[1] +
-              escapeHTML(r.title) +
-              html.result[2] +
-              escapeHTML(domain) +
-              html.result[3] +
-              escapeHTML(path) +
-              html.result[4] +
-              (r.description
-                ? '<p class="description">' +
-                  escapeHTML(shorten(r.description.split("\n").join(""), 150)) +
-                  "</p>"
-                : "") +
-              html.result[5]
-            );
-          })
-          .join("\n"),
+        content:
+          (data.answer
+            ? `<div class="answer"><p>${escapeHTML(data.answer)}</p></div>`
+            : ``) +
+          data.results
+            .map((r) => {
+              const { domain, path } = formatUrl(r.url);
+              return (
+                html.result[0] +
+                escapeHTML(r.resultUrl) +
+                html.result[1] +
+                escapeHTML(r.title) +
+                html.result[2] +
+                escapeHTML(domain) +
+                html.result[3] +
+                escapeHTML(path) +
+                html.result[4] +
+                (r.description
+                  ? '<p class="description">' +
+                    escapeHTML(
+                      shorten(r.description.split("\n").join(""), 150)
+                    ) +
+                    "</p>"
+                  : "") +
+                html.result[5]
+              );
+            })
+            .join("\n"),
       })
     );
 });
