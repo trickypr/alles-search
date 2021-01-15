@@ -125,7 +125,7 @@ app.get("/:query", auth, async (req, res) => {
           description: r.description
             ? shorten(r.description.split("\n").join(""), 150)
             : null,
-          url: r.url,
+          url: r.searchUrl,
           domain,
           path,
         };
@@ -142,7 +142,7 @@ app.get("/:query", auth, async (req, res) => {
             const { domain, path } = formatUrl(r.url);
             return (
               html.result[0] +
-              escapeHTML(r.url) +
+              escapeHTML(r.searchUrl) +
               html.result[1] +
               escapeHTML(r.title) +
               html.result[2] +
