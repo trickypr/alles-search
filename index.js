@@ -163,6 +163,15 @@ app.get("/:query", auth, async (req, res) => {
 // Static
 app.use("/_/static", express.static(`${__dirname}/static`));
 
+// Tweet
+app.get("/_/tweet", (_req, res) =>
+  res.redirect(
+    `https://twitter.com/intent/tweet?text=${encodeURIComponent(
+      "I'm using @AllesHQ's new search engine. Join me and #SearchWithAlles! search.alles.cx"
+    )}`
+  )
+);
+
 // Auth
 app.get("/_/auth", async (req, res) => {
   const { token } = req.query;
