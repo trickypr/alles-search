@@ -11,7 +11,6 @@ const TOKEN_COOKIE = "search-token";
 
 const axios = require("axios");
 const escapeHTML = require("escape-html");
-const url = require("url");
 
 // Express
 const express = require("express");
@@ -81,9 +80,7 @@ app.get("/", auth, (req, res) => {
   res.send(
     generatePage({
       user: req.user,
-      content: !req.user
-        ? `<p style="text-align: center;"><a href="${LOGIN_URL}">Sign in</a> to get the most out of Alles!</p>`
-        : ``,
+      content: `<p style="text-align: center;">${getText(req.user)}</p>`,
     })
   );
 });
@@ -163,6 +160,9 @@ app.get("/:query", auth, async (req, res) => {
 // Static
 app.use("/_/static", express.static(`${__dirname}/static`));
 
+// Login
+app.get("/_/login", (_req, res) => res.redirect(LOGIN_URL));
+
 // Tweet
 app.get("/_/tweet", (_req, res) =>
   res.redirect(
@@ -196,6 +196,7 @@ const shorten = (s, l) =>
   s.length > l ? s.substr(0, l - 3).trimEnd() + "..." : s;
 
 // Format URL
+const url = require("url");
 const formatUrl = (s) => {
   const parsedUrl = url.parse(s);
   let domain = parsedUrl.hostname;
@@ -203,4 +204,19 @@ const formatUrl = (s) => {
   let path = parsedUrl.path;
   if (path.endsWith("/")) path = path.substr(0, path.length - 1);
   return { domain, path };
+};
+
+// Get Homepage Text
+const texts = require("./texts.json");
+const getText = (u) => {
+  const t1 = texts.filter((t) => t.auth === !!u || typeof t.auth !== "boolean");
+
+  const t2 = [];
+  for (let i1 in t1) {
+    for (let i2 = 0; i2 < (t1[i1].weight || 1); i2++) t2.push(t1[i1]);
+  }
+
+  const t3 = t2.map((t) => t.content);
+  const t = t3[Math.floor(Math.random() * t3.length)];
+  return t.split("[nickname]").join(escapeHTML(u ? u.nickname : ""));
 };

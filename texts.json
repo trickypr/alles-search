@@ -1,0 +1,25 @@
+[
+  {
+    "content": "<a href='/_/login'>Sign in</a> to get the most out of Alles!",
+    "weight": 10,
+    "auth": false
+  },
+  {
+    "content": "Thanks for using Alles, [nickname]!",
+    "auth": true
+  },
+  {
+    "content": "Hello there, [nickname].",
+    "auth": true
+  },
+  {
+    "content": "Show some love, <a href='/_/tweet' target='_blank'>tweet about us</a>!",
+    "weight": 5
+  },
+  {
+    "content": "Learn how to <a href='https://twitter.com/AllesHQ/status/1349807735597125632' target='_blank'>set it as the default</a>",
+    "weight": 5
+  },
+  { "content": "Requires an internet connection." },
+  { "content": "Remember to drink some water" }
+]
