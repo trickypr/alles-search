@@ -186,7 +186,11 @@ app.get("/_/auth", async (req, res) => {
     try {
       res.cookie(
         TOKEN_COOKIE,
-        (await axios.patch(`${SESSION_API}/tokens`, { token })).data.token
+        (await axios.patch(`${SESSION_API}/tokens`, { token })).data.token,
+        {
+          maxAge: 1000 * 60 * 60 * 24 * 365,
+          httpOnly: true,
+        }
       );
     } catch (err) {}
   } else res.cookie(TOKEN_COOKIE, "");
