@@ -168,16 +168,5 @@ h1 {
 .homepageLinks {
   display: flex;
   justify-content: space-between;
-}
-
-@media screen and (max-width: 550px) {
-  .homepageLinks a:nth-child(4) {
-    display: none;
-  }
-}
-
-@media screen and (max-width: 400px) {
-  .homepageLinks a:nth-child(3) {
-    display: none;
-  }
+  font-size: 10px;
 }
