@@ -247,7 +247,7 @@ app.get("/ref/:username", async (req, res) => {
   }
 
   // Social
-  if (ua.includes("Twitterbot"))
+  if (ua.includes("Twitterbot") || ua.includes("Discordbot"))
     return res.send(
       templates.ref[0] +
         escapeHTML(user.nickname) +
