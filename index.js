@@ -230,6 +230,9 @@ app.get("/to/:token", async (req, res) => {
 
 // User Referral Link
 app.get("/ref/:username", async (req, res) => {
+  const ua = req.headers["user-agent"];
+  console.log(ua);
+
   // Get User
   let user;
   try {
