@@ -7,7 +7,13 @@ const {
   LOGIN_URL,
   PORT,
 } = process.env;
+
 const TOKEN_COOKIE = "search-token";
+const REFERRAL_COOKIE = "ref-user";
+const cookieConfig = {
+  maxAge: 1000 * 60 * 60 * 24 * 365,
+  httpOnly: true,
+};
 
 const axios = require("axios");
 const escapeHTML = require("escape-html");
@@ -177,10 +183,12 @@ app.use("/_/static", express.static(`${__dirname}/static`));
 app.get("/_/login", (_req, res) => res.redirect(LOGIN_URL));
 
 // Tweet
-app.get("/_/tweet", (_req, res) =>
+app.get("/_/tweet", auth, (req, res) =>
   res.redirect(
     `https://twitter.com/intent/tweet?text=${encodeURIComponent(
-      "I'm using @AllesHQ's new search engine. Join me and #SearchWithAlles! search.alles.cx"
+      `I'm using @AllesHQ's new search engine. Join me and #SearchWithAlles! search.alles.cx${
+        req.user ? `/ref/${encodeURIComponent(req.user.username)}` : ``
+      }`
     )}`
   )
 );
@@ -194,10 +202,7 @@ app.get("/_/auth", async (req, res) => {
       res.cookie(
         TOKEN_COOKIE,
         (await axios.patch(`${SESSION_API}/tokens`, { token })).data.token,
-        {
-          maxAge: 1000 * 60 * 60 * 24 * 365,
-          httpOnly: true,
-        }
+        cookieConfig
       );
     } catch (err) {}
   } else res.cookie(TOKEN_COOKIE, "");
@@ -221,6 +226,25 @@ app.get("/to/:token", async (req, res) => {
   } catch (err) {
     res.redirect("/");
   }
+});
+
+// User Referral Link
+app.get("/ref/:username", async (req, res) => {
+  // Get User
+  let user;
+  try {
+    user = (
+      await axios.get(
+        `${HORIZON_API}/username/${encodeURIComponent(req.params.username)}`
+      )
+    ).data;
+  } catch (err) {
+    return res.redirect("/");
+  }
+
+  // Response
+  res.cookie(REFERRAL_COOKIE, user.id, cookieConfig);
+  res.redirect("/");
 });
 
 // 404
