@@ -26,29 +26,31 @@ app.use(require("body-parser").json());
 app.use((_err, _req, res, _next) => res.status(500).send("Internal Error"));
 app.listen(PORT || 8080, () => console.log("Server is listening..."));
 
-// HTML
+// Templates
 const fs = require("fs");
-const getHTML = (name) =>
-  fs.readFileSync(`${__dirname}/html/${name}.html`).toString().split("[x]");
-const html = {
-  base: getHTML("base"),
-  home: getHTML("home"),
-  result: getHTML("result"),
+const parseTemplate = (name) =>
+  fs.readFileSync(`${__dirname}/templates/${name}`).toString().split("[x]");
+const templates = {
+  base: parseTemplate("base.html"),
+  home: parseTemplate("home.html"),
+  result: parseTemplate("result.html"),
+  ref: parseTemplate("ref.html"),
+  refCard: parseTemplate("ref.svg"),
 };
 
 // Generate Page
 const generatePage = ({ title, user, query, content }) =>
-  html.base[0] +
+  templates.base[0] +
   escapeHTML(title || "Search with Alles") +
-  html.base[1] +
+  templates.base[1] +
   escapeHTML(query || "") +
-  html.base[2] +
+  templates.base[2] +
   (user
     ? `<img class="avatar" src="https://avatar.alles.cx/${user.id}?size=44" />`
     : "") +
-  html.base[3] +
+  templates.base[3] +
   (content || "") +
-  html.base[4];
+  templates.base[4];
 
 // Auth
 const auth = async (req, _res, next) => {
@@ -88,9 +90,9 @@ app.get("/", auth, (req, res) => {
     generatePage({
       user: req.user,
       content:
-        html.home[0] +
+        templates.home[0] +
         (req.user ? "" : '<a href="/_/login">Sign In</a>') +
-        html.home[1],
+        templates.home[1],
     })
   );
 });
@@ -152,15 +154,15 @@ app.get("/:query", auth, async (req, res) => {
             .map((r) => {
               const { domain, path } = formatUrl(r.url);
               return (
-                html.result[0] +
+                templates.result[0] +
                 escapeHTML(r.resultUrl) +
-                html.result[1] +
+                templates.result[1] +
                 escapeHTML(r.title) +
-                html.result[2] +
+                templates.result[2] +
                 escapeHTML(domain) +
-                html.result[3] +
+                templates.result[3] +
                 escapeHTML(path) +
-                html.result[4] +
+                templates.result[4] +
                 (r.description
                   ? '<p class="description">' +
                     escapeHTML(
@@ -168,7 +170,7 @@ app.get("/:query", auth, async (req, res) => {
                     ) +
                     "</p>"
                   : "") +
-                html.result[5]
+                templates.result[5]
               );
             })
             .join("\n"),
@@ -231,7 +233,6 @@ app.get("/to/:token", async (req, res) => {
 // User Referral Link
 app.get("/ref/:username", async (req, res) => {
   const ua = req.headers["user-agent"];
-  console.log(ua);
 
   // Get User
   let user;
@@ -245,9 +246,48 @@ app.get("/ref/:username", async (req, res) => {
     return res.redirect("/");
   }
 
+  // Social
+  if (ua.includes("Twitterbot"))
+    return res.send(
+      templates.ref[0] +
+        escapeHTML(user.nickname) +
+        templates.ref[1] +
+        escapeHTML(user.username) +
+        templates.ref[2]
+    );
+
   // Response
   res.cookie(REFERRAL_COOKIE, user.id, cookieConfig);
   res.redirect("/");
+});
+
+// User Referral Link Card
+const sharp = require("sharp");
+app.get("/ref/:username/card.png", async (req, res) => {
+  // Get User
+  let user;
+  try {
+    user = (
+      await axios.get(
+        `${HORIZON_API}/username/${encodeURIComponent(req.params.username)}`
+      )
+    ).data;
+  } catch (err) {
+    return res.status(404).send("Missing Resource");
+  }
+
+  // Generate SVG
+  const svg =
+    templates.refCard[0] + escapeHTML(user.nickname) + templates.refCard[1];
+
+  // Send as PNG
+  try {
+    const img = await sharp(Buffer.from(svg)).png().toBuffer();
+    res.setHeader("Content-Type", "image/png");
+    res.send(img);
+  } catch (err) {
+    res.status(500).send("Internal Error");
+  }
 });
 
 // 404
