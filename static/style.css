@@ -167,9 +167,3 @@ h1 a {
   margin-top: 5px;
   font-size: 15px;
 }
-
-.homepageLinks {
-  display: flex;
-  justify-content: space-between;
-  font-size: 10px;
-}
